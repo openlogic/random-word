@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "random-word"
   gem.homepage = "http://github.com/pezra/random-word"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = %Q{Pick random words for factory data}
+  gem.description = %Q{A random word generator intended for use in test data factories.  This library uses a large list (the wordnet corpus) of english words and provides an enumerator interface to that corpus that will return the words in a random order without repeats.}
   gem.email = "pezra@barelyenough.org"
   gem.authors = ["Peter Williams"]
   # dependencies defined in Gemfile
