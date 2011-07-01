@@ -5,18 +5,34 @@ require 'machinist/lathe'
 require 'random_word/machinist'
 
 describe RandomWord::Machinist do
-  let(:klass){ Class.new(Struct.new(:name)) do
+  let(:klass){ Class.new(Struct.new(:name,:role)) do
       extend Machinist::Machinable
     end
   }
 
   it "allows the use of #sw in blue prints" do
     klass.blueprint do
-      name do
-        serial_word
-       end
+      name {sw}
     end
     klass.make.name.should_not be_nil
+  end
+
+  it "allows the use of #serial_word in blue prints" do
+    klass.blueprint do
+      name {serial_word}
+    end
+    klass.make.name.should_not be_nil
+  end
+
+  it "return same word for each call to serial_word" do
+    klass.blueprint do
+      name {serial_word}
+      role {serial_word}
+    end
+
+    klass.make.tap do |obj|
+      obj.name.should == obj.role
+    end
   end
 
 end
