@@ -6,6 +6,30 @@ library uses a large list (the wordnet corpus) of english words and
 provides an enumerator interface to that corpus that will return the
 words in a random order without repeats.
 
+Examples
+----
+
+### General use
+
+    Random.adjs.next  #=> "pugnacious"
+    Random.nouns.next #=> "audience"
+    
+### Factory Girl
+
+    Factory.define(:user) do |u|
+      u.name  "#{RandomWord.adjs.next} User"
+      u.email {|u| "#{u.name.gsub(/ +/, '.')}@example.com"
+    end
+
+    Factory(:user) #=> 
+
+### Machinist
+
+    User.blueprint do 
+      name  { "#{sw.capitalize} User" }
+      email { "#{sw}.user@example.com" }
+    end
+
 Contributing to random-word
 ----
  
