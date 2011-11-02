@@ -38,18 +38,25 @@ module RandomWord
 
   class << self
 
-    # Random noun enumerator
-    #
-    # @return [Enumerator]
+    # @return [Enumerator] Random noun enumerator
     def nouns
       @nouns ||= enumerator(load_word_list("nouns.dat"))
     end
 
-    # Random adjective enumerator
-    #
-    # @return [Enumerator]
+    # @return [Enumerator] Random adjective enumerator
     def adjs
       @adjs ||= enumerator(load_word_list("adjs.dat"))
+    end
+
+    # @return [Enumerator] Random phrase enumerator
+    def phrases
+      @phrases ||= Enumerator.new(Class.new do 
+        def each()
+          while true
+            yield "#{RandomWord.adjs.next} #{RandomWord.nouns.next}"
+          end
+        end
+      end.new)
     end
 
     # Create a random, non-repeating enumerator for a list of words

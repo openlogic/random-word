@@ -1,3 +1,7 @@
+1.2
+----
+ * random phrase enumerator
+ 
 1.1
 ----
  * Machinist serial word support

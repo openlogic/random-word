@@ -34,4 +34,7 @@ describe RandomWord do
     RandomWord.adjs.should respond_to(:next)
   end
 
+  it "can return a random phrase enumerator" do 
+    RandomWord.phrases.next.should be_a(String)
+  end
 end
