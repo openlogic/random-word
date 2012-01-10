@@ -8,13 +8,17 @@ require 'pathname'
 #
 module RandomWord
   module EachRandomly
+    attr_accessor :random_word_exclude_list
+
     def each_randomly(&blk)
       used = Set.new
-
+      exclude_list = Array(@random_word_exclude_list)
       while true
         idx = next_unused_idx(used)
         used << idx
-        yield at(idx)
+        word = at(idx)
+        next if exclude_list.index{|r| r === word }
+        yield word
       end
 
     rescue OutOfWords
@@ -37,15 +41,18 @@ module RandomWord
   end
 
   class << self
+    def exclude_list
+      @exclude_list || @exclude_list = []
+    end
 
     # @return [Enumerator] Random noun enumerator
     def nouns
-      @nouns ||= enumerator(load_word_list("nouns.dat"))
+      @nouns ||= enumerator(load_word_list("nouns.dat"), exclude_list)
     end
 
     # @return [Enumerator] Random adjective enumerator
     def adjs
-      @adjs ||= enumerator(load_word_list("adjs.dat"))
+      @adjs ||= enumerator(load_word_list("adjs.dat"), exclude_list)
     end
 
     # @return [Enumerator] Random phrase enumerator
@@ -61,9 +68,10 @@ module RandomWord
 
     # Create a random, non-repeating enumerator for a list of words
     # (or anything really).
-    def enumerator(word_list)
+    def enumerator(word_list, list_of_regexs_or_strings_to_exclude = [])
       word_list.extend EachRandomly
-      Enumerator.new(word_list, :each_randomly)
+      word_list.random_word_exclude_list = list_of_regexs_or_strings_to_exclude
+      word_list.enum_for(:each_randomly)
     end
 
     protected
