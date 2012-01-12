@@ -6,29 +6,50 @@ library uses a large list (the wordnet corpus) of english words and
 provides an enumerator interface to that corpus that will return the
 words in a random order without repeats.
 
-Examples
+Usage
 ----
 
-### General use
+You can get a random word any where you need one. Just request the
+next of which ever word flavor you prefer.
 
-    Random.adjs.next  #=> "pugnacious"
-    Random.nouns.next #=> "audience"
+    RandomWord.adjs.next  #=> "pugnacious"
+    RandomWord.nouns.next #=> "audience"
     
 ### Factory Girl
+
+This library was first developed to use in factories. It can be used
+with Factory Girl like this.
 
     Factory.define(:user) do |u|
       u.name  "#{RandomWord.adjs.next} User"
       u.email {|u| "#{u.name.gsub(/ +/, '.')}@example.com"
     end
 
-    Factory(:user) #=> 
+    Factory(:user) #=> ...
 
 ### Machinist
+
+
+For Machinist a `#sw` (short for serial word) method is provided. It works exactly like `#sn`
+but it returns a string instead of a number.
 
     User.blueprint do 
       name  { "#{sw.capitalize} User" }
       email { "#{sw}.user@example.com" }
     end
+
+Exclusion
+----
+
+Words may be excluded by pattern, or exact match. To do this just add
+an object that responds to `#===` to the exclude list.
+
+    RandomWord.exclude_list << /fo+/
+    RandomWord.exclude_list << 'bar'
+
+This will prevent the return of the exact string `"bar"` and any word
+which matches the regex `/fo+/`.
+
 
 Contributing to random-word
 ----
