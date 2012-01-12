@@ -17,7 +17,7 @@ module RandomWord
         idx = next_unused_idx(used)
         used << idx
         word = at(idx)
-        next if exclude_list.index{|r| r === word }
+        next if exclude_list.any?{|r| r === word }
         yield word
       end
 
@@ -42,7 +42,7 @@ module RandomWord
 
   class << self
     def exclude_list
-      @exclude_list || @exclude_list = []
+      @exclude_list ||= []
     end
 
     # @return [Enumerator] Random noun enumerator
