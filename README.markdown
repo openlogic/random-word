@@ -70,6 +70,6 @@ Contributing to random-word
 Copyright
 ----
 
-Copyright (c) 2011 OpenLogic, Peter Williams. See LICENSE.txt for
+Copyright (c) 2011 OpenLogic, Inc. See LICENSE.txt for
 further details.
 
