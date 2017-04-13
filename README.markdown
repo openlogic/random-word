@@ -1,5 +1,7 @@
 random-word
 ====
+[![Build Status](https://travis-ci.org/openlogic/random-word.svg?branch=master)](https://travis-ci.org/openlogic/random-word)
+[![Coverage Status](https://coveralls.io/repos/github/openlogic/random-word/badge.svg?branch=master)](https://coveralls.io/github/openlogic/random-word?branch=master)
 
 A random word generator intended for use in test data factories.  This
 library uses a large list (the wordnet corpus) of english words and
@@ -26,17 +28,6 @@ with Factory Girl like this.
     end
 
     Factory(:user) #=> ...
-
-### Machinist
-
-
-For Machinist a `#sw` (short for serial word) method is provided. It works exactly like `#sn`
-but it returns a string instead of a number.
-
-    User.blueprint do 
-      name  { "#{sw.capitalize} User" }
-      email { "#{sw}.user@example.com" }
-    end
 
 Exclusion
 ----
