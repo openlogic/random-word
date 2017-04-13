@@ -4,19 +4,19 @@ describe RandomWord, "enumerator" do
   subject {RandomWord.enumerator(["aaa", "bbb", "ccc"])}
 
   it "can get you the next word in its list" do
-    subject.next.should be_one_of(["aaa", "bbb", "ccc"])
+    expect(subject.next).to be_one_of(["aaa", "bbb", "ccc"])
   end
 
   it "raises error when it runs out of words" do 
     3.times{subject.next}
 
-    lambda{subject.next}.should raise_error(StopIteration)
+    expect{subject.next}.to raise_error(StopIteration)
   end
 
   it "make sure each word is only returned once" do 
     already_received = []
     3.times do
-      (new_word = subject.next).should_not be_one_of(already_received)
+      expect(new_word = subject.next).not_to be_one_of(already_received)
       already_received << new_word
     end
   end
@@ -28,15 +28,15 @@ describe RandomWord do
   end
 
   it "can return a random noun enumerator" do 
-    RandomWord.nouns.should respond_to(:next)
+    expect(RandomWord.nouns).to respond_to(:next)
   end
 
   it "can return a random adj enumerator" do 
-    RandomWord.adjs.should respond_to(:next)
+    expect(RandomWord.adjs).to respond_to(:next)
   end
 
   it "can return a random phrase enumerator" do 
-    RandomWord.phrases.next.should be_a(String)
+    expect(RandomWord.phrases.next).to be_a(String)
   end
 end
 
@@ -56,7 +56,7 @@ describe RandomWord, "#exclude" do
         received_words << subject.next
       end rescue StopIteration
 
-      Set.new(received_words).should == rec[:expected]
+      expect(Set.new(received_words)).to eq(rec[:expected])
     end
   end
 
@@ -67,7 +67,7 @@ describe "RandomWord#nouns", "with exclusions" do
   subject{ RandomWord.nouns }
 
   before(:each) do
-    RandomWord.should_receive(:load_word_list).and_return(["aaa","bbb", "ccc"])
+    expect(RandomWord).to receive(:load_word_list).and_return(["aaa","bbb", "ccc"])
   end
 
   after(:each) do
@@ -83,9 +83,9 @@ describe "RandomWord#nouns", "with exclusions" do
       received_words << subject.next
     end
 
-    received_words.should_not include "ccc"
-    received_words.should include "aaa"
-    received_words.should include "bbb"
+    expect(received_words).not_to include "ccc"
+    expect(received_words).to include "aaa"
+    expect(received_words).to include "bbb"
   end
 
 end

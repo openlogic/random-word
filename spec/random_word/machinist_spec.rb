@@ -14,14 +14,14 @@ describe RandomWord::Machinist do
     klass.blueprint do
       name {sw}
     end
-    klass.make.name.should_not be_nil
+    expect(klass.make.name).not_to be_nil
   end
 
   it "allows the use of #serial_word in blue prints" do
     klass.blueprint do
       name {serial_word}
     end
-    klass.make.name.should_not be_nil
+    expect(klass.make.name).not_to be_nil
   end
 
   it "return same word for each call to serial_word" do
@@ -31,7 +31,7 @@ describe RandomWord::Machinist do
     end
 
     klass.make.tap do |obj|
-      obj.name.should == obj.role
+      expect(obj.name).to eq(obj.role)
     end
   end
 
