@@ -1,6 +1,7 @@
 random-word
 ====
 [![Build Status](https://travis-ci.org/openlogic/random-word.svg?branch=master)](https://travis-ci.org/openlogic/random-word)
+[![Coverage Status](https://coveralls.io/repos/github/openlogic/random-word/badge.svg?branch=master)](https://coveralls.io/github/openlogic/random-word?branch=master)
 
 A random word generator intended for use in test data factories.  This
 library uses a large list (the wordnet corpus) of english words and
