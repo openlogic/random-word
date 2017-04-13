@@ -8,6 +8,9 @@
 /spec/reports/
 /tmp/
 
+# Your rspec options are your business
+.rspec
+
 # rspec failure tracking
 .rspec_status
 
