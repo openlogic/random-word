@@ -29,17 +29,6 @@ with Factory Girl like this.
 
     Factory(:user) #=> ...
 
-### Machinist
-
-
-For Machinist a `#sw` (short for serial word) method is provided. It works exactly like `#sn`
-but it returns a string instead of a number.
-
-    User.blueprint do 
-      name  { "#{sw.capitalize} User" }
-      email { "#{sw}.user@example.com" }
-    end
-
 Exclusion
 ----
 
