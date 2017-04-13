@@ -24,7 +24,7 @@ with Factory Girl like this.
 
     Factory.define(:user) do |u|
       u.name  "#{RandomWord.adjs.next} User"
-      u.email {|u| "#{u.name.gsub(/ +/, '.')}@example.com"
+      u.email "{|u| "#{u.name.gsub(/ +/, '.')}@example.com"
     end
 
     Factory(:user) #=> ...
