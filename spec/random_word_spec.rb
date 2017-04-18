@@ -91,75 +91,99 @@ describe "RandomWord#nouns", "with exclusions" do
 end
 
 shared_examples 'allows constraints on word length' do |method|
-  let(:word_list) { %w(aa bbb cccc ddddd) }
+  context 'when constraining' do
+    let(:word_list) { %w(aa bbb cccc ddddd) }
 
-  before(:each) do
-    expect(RandomWord).to receive(:load_word_list).and_return(word_list)
-  end
+    before(:each) do
+      expect(RandomWord).to receive(:load_word_list).and_return(word_list)
+    end
 
-  after(:each) do
-    RandomWord.instance_eval{ @nouns, @adjs = nil, nil }
-  end
+    after(:each) do
+      RandomWord.instance_eval{ @nouns, @adjs = nil, nil }
+    end
 
-  let(:next_words) do
-    [].tap do |next_words|
-      loop do
-        begin
-          next_words << RandomWord.send(method, length_constraints).next
-        rescue StopIteration
-          # We've tried all the words in the short test list we're using.
-          break
+    let(:next_words) do
+      [].tap do |next_words|
+        loop do
+          begin
+            next_words << RandomWord.send(method, length_constraints).next
+          rescue StopIteration
+            # We've tried all the words in the short test list we're using.
+            break
+          end
         end
       end
     end
-  end
 
-  context 'when constraining by maximum length' do
-    let(:length_constraints) { {not_longer_than: 2} }
+    context 'by maximum length' do
+      let(:length_constraints) { {not_longer_than: 2} }
 
-    it 'excludes the correct words' do
-      expect(next_words).to match_array %w(aa)
-    end
-  end
-
-  context 'when constraining by minimum length' do
-    let(:length_constraints) { {not_shorter_than: 4} }
-
-    it 'excludes the correct words' do
-      expect(next_words).to match_array %w(cccc ddddd)
+      it 'excludes the correct words' do
+        expect(next_words).to match_array %w(aa)
+      end
     end
 
-  end
+    context 'by minimum length' do
+      let(:length_constraints) { {not_shorter_than: 4} }
 
-  context 'when constraining by both minimum and maximum length' do
-    let(:length_constraints) { {not_shorter_than: 3, not_longer_than: 4} }
+      it 'excludes the correct words' do
+        expect(next_words).to match_array %w(cccc ddddd)
+      end
 
-    it 'excludes the correct words' do
-      expect(next_words).to match_array %w(bbb cccc)
+    end
+
+    context 'by both minimum and maximum length' do
+      let(:length_constraints) { {not_shorter_than: 3, not_longer_than: 4} }
+
+      it 'excludes the correct words' do
+        expect(next_words).to match_array %w(bbb cccc)
+      end
+    end
+
+    context 'by a perverse minimum length' do
+      let(:length_constraints) { {not_shorter_than: -1234} }
+
+      it 'includes all words' do
+        expect(next_words).to match_array word_list
+      end
+    end
+
+    context 'by a perverse maximum length' do
+      let(:length_constraints) { {not_longer_than: -34234} }
+
+      it 'excludes all words' do
+        expect(next_words).to be_empty
+      end
+    end
+
+    context 'and all words are within the constraints' do
+      let(:length_constraints) { {not_shorter_than: 2, not_longer_than: 5} }
+
+      it 'includes all words' do
+        expect(next_words).to match_array word_list
+      end
     end
   end
+end
 
-  context 'when given a perverse minimum length' do
-    let(:length_constraints) { {not_shorter_than: -1234} }
+shared_examples 'changing constraints in subsequent calls' do |method|
+  context 'when changing constraints in subsequent calls' do
+    let(:word_list) { %w(defenestrate as can jubilant orangutan hat) }
 
-    it 'includes all words' do
-      expect(next_words).to match_array word_list
+    before(:each) do
+      expect(RandomWord).to receive(:load_word_list).and_return(word_list)
     end
-  end
 
-  context 'when given a perverse maximum length' do
-    let(:length_constraints) { {not_longer_than: -34234} }
-
-    it 'excludes all words' do
-      expect(next_words).to be_empty
+    after(:each) do
+      RandomWord.instance_eval{ @nouns, @adjs = nil, nil }
     end
-  end
 
-  context 'when all words are within the constraints' do
-    let(:length_constraints) { {not_shorter_than: 2, not_longer_than: 5} }
-
-    it 'includes all words' do
-      expect(next_words).to match_array word_list
+    it 'applies the new constraints' do
+      short_words = %w(as can hat)
+      long_words = %w(defenestrate jubilant orangutan)
+      3.times { expect(short_words).to include RandomWord.send(method, not_longer_than: 3).next }
+      3.times { expect(long_words).to include RandomWord.send(method, not_longer_than: 150).next }
+      expect { RandomWord.send(method).next }.to raise_exception StopIteration
     end
   end
 end
@@ -167,9 +191,11 @@ end
 describe RandomWord do
   context '#nouns' do
     include_examples 'allows constraints on word length', :nouns
+    include_examples 'changing constraints in subsequent calls', :nouns
   end
 
   context '#adjs' do
     include_examples 'allows constraints on word length', :adjs
+    include_examples 'changing constraints in subsequent calls', :adjs
   end
 end
