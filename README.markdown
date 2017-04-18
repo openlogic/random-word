@@ -14,20 +14,24 @@ Usage
 You can get a random word any where you need one. Just request the
 next of which ever word flavor you prefer.
 
-    RandomWord.adjs.next  #=> "pugnacious"
-    RandomWord.nouns.next #=> "audience"
+```ruby
+RandomWord.adjs.next  #=> "pugnacious"
+RandomWord.nouns.next #=> "audience"
+```
     
 ### Factory Girl
 
 This library was first developed to use in factories. It can be used
 with Factory Girl like this.
 
-    Factory.define(:user) do |u|
-      u.name  "#{RandomWord.adjs.next} User"
-      u.email {|u| "#{u.name.gsub(/ +/, '.')}@example.com"
-    end
+```ruby
+Factory.define(:user) do |u|
+  u.name  "#{RandomWord.adjs.next} User"
+  u.email {|u| "#{u.name.gsub(/ +/, '.')}@example.com"
+end
 
-    Factory(:user) #=> ...
+Factory(:user) #=> ...
+```
 
 Exclusion
 ----
@@ -35,8 +39,10 @@ Exclusion
 Words may be excluded by pattern, or exact match. To do this just add
 an object that responds to `#===` to the exclude list.
 
-    RandomWord.exclude_list << /fo+/
-    RandomWord.exclude_list << 'bar'
+```ruby
+RandomWord.exclude_list << /fo+/
+RandomWord.exclude_list << 'bar'
+```
 
 This will prevent the return of the exact string `"bar"` and any word
 which matches the regex `/fo+/`.
@@ -45,6 +51,7 @@ Constraining word length
 ----
 
 You can constrain the length of words provided by the `nouns` and `adjs` iterators like so:
+
 ```ruby
 RandomWord.nouns(not_longer_than: 56).next
 RandomWord.adjs(not_shorter_than: 3).next
