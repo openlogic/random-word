@@ -41,6 +41,15 @@ an object that responds to `#===` to the exclude list.
 This will prevent the return of the exact string `"bar"` and any word
 which matches the regex `/fo+/`.
 
+Constraining word length
+----
+
+You can constrain the length of words provided by the `nouns` and `adjs` iterators like so:
+```ruby
+RandomWord.nouns(not_longer_than: 56).next
+RandomWord.adjs(not_shorter_than: 3).next
+RandomWord.adjs(not_shorter_than: 16, not_longer_than: 672).next
+```
 
 Contributing to random-word
 ----
