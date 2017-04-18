@@ -23,8 +23,8 @@ This library was first developed to use in factories. It can be used
 with Factory Girl like this.
 
     Factory.define(:user) do |u|
-      u.name  "#{RandomWord.adjs.next} User"
-      u.email {|u| "#{u.name.gsub(/ +/, '.')}@example.com"
+      u.name  { "#{RandomWord.adjs.next.titleize} User" }
+      u.email { "#{name.gsub(/ +/, '.')}@example.com" }
     end
 
     Factory(:user) #=> ...
