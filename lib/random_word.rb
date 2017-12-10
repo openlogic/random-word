@@ -1,5 +1,6 @@
 require 'set'
 require 'pathname'
+require 'json'
 
 # Provides random, non-repeating enumerators of a large list of
 # english words. For example"
@@ -72,14 +73,14 @@ module RandomWord
 
     # @return [Enumerator] Random noun enumerator
     def nouns(opts = {})
-      @nouns ||= enumerator(load_word_list("nouns.dat"), exclude_list)
+      @nouns ||= enumerator(load_word_list("nouns.json"), exclude_list)
       word_list.set_constraints(opts)
       @nouns
     end
 
     # @return [Enumerator] Random adjective enumerator
     def adjs(opts = {})
-      @adjs ||= enumerator(load_word_list("adjs.dat"), exclude_list)
+      @adjs ||= enumerator(load_word_list("adjs.json"), exclude_list)
       word_list.set_constraints(opts)
       @adjs
     end
@@ -107,8 +108,8 @@ module RandomWord
     protected
 
     def load_word_list(name)
-      data_root = Pathname(File.dirname(__FILE__)) + "../data"
-      File.open(data_root + name){|f| Marshal.load(f)}
+      filename = File.join Pathname(File.dirname(__FILE__)), "../data", name
+      JSON.parse(File.read(filename))
     end
   end
 end
