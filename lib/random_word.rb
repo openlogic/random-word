@@ -85,6 +85,13 @@ module RandomWord
       @adjs
     end
 
+    def words(opts={})
+      @words ||= enumerator(load_word_list("adjs.json") + load_word_list("nouns.json"), exclude_list)
+      word_list.set_constraints(opts)
+      @words
+    end
+
+    
     # @return [Enumerator] Random phrase enumerator
     def phrases
       @phrases ||= Enumerator.new(Class.new do 
