@@ -188,14 +188,40 @@ shared_examples 'changing constraints in subsequent calls' do |method|
   end
 end
 
+shared_examples 'with a seed specified' do |method|
+  context 'when setting seed' do
+    let(:word_list) { %w(defenestrate as can jubilant orangutan hat) }
+
+    before(:each) do
+      expect(RandomWord).to receive(:load_word_list).and_return(word_list)
+    end
+
+    after(:each) do
+      RandomWord.instance_eval{ @nouns, @adjs = nil, nil }
+    end
+
+    it 'applies the new constraints' do
+      RandomWord.rng = Random.new 1234
+
+      short_words = %w(as can hat)
+      long_words = %w(defenestrate jubilant orangutan)
+      3.times { expect(short_words).to include RandomWord.send(method, not_longer_than: 3).next }
+      3.times { expect(long_words).to include RandomWord.send(method, not_longer_than: 150).next }
+      expect { RandomWord.send(method).next }.to raise_exception StopIteration
+    end
+  end
+end
+
 describe RandomWord do
   context '#nouns' do
     include_examples 'allows constraints on word length', :nouns
     include_examples 'changing constraints in subsequent calls', :nouns
+    include_examples 'with a seed specified', :nouns
   end
 
   context '#adjs' do
     include_examples 'allows constraints on word length', :adjs
     include_examples 'changing constraints in subsequent calls', :adjs
+    include_examples 'with a seed specified', :adjs
   end
 end
