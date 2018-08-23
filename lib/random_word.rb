@@ -87,13 +87,13 @@ module RandomWord
 
     # @return [Enumerator] Random phrase enumerator
     def phrases
-      @phrases ||= Enumerator.new(Class.new do 
+      @phrases ||= (Class.new do
         def each()
           while true
             yield "#{RandomWord.adjs.next} #{RandomWord.nouns.next}"
           end
         end
-      end.new)
+      end.new).to_enum
     end
 
     # Create a random, non-repeating enumerator for a list of words
