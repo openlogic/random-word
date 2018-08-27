@@ -24,7 +24,7 @@ end
 
 describe RandomWord do 
   after(:all) do
-    RandomWord.instance_eval{ @nouns, @adjs = nil, nil } # reset rspec effects
+    RandomWord.instance_eval{ @nouns, @adjs, @words = nil, nil, nil } # reset rspec effects
   end
 
   it "can return a random noun enumerator" do 
@@ -33,6 +33,10 @@ describe RandomWord do
 
   it "can return a random adj enumerator" do 
     expect(RandomWord.adjs).to respond_to(:next)
+  end
+
+  it "can return a random word enumerator" do 
+    expect(RandomWord.words).to respond_to(:next)
   end
 
   it "can return a random phrase enumerator" do 
@@ -72,7 +76,35 @@ describe "RandomWord#nouns", "with exclusions" do
 
   after(:each) do
     RandomWord.exclude_list.clear
-    RandomWord.instance_eval{ @nouns, @adjs = nil, nil } # reset rspec effects
+    RandomWord.instance_eval{ @nouns, @adjs, @words = nil, nil, nil } # reset rspec effects
+  end
+
+  it "will not return an excluded word" do
+    RandomWord.exclude_list << "ccc"
+
+    received_words = []
+    loop do
+      received_words << subject.next
+    end
+
+    expect(received_words).not_to include "ccc"
+    expect(received_words).to include "aaa"
+    expect(received_words).to include "bbb"
+  end
+
+end
+
+describe "RandomWord#words", "with exclusions" do
+
+  subject{ RandomWord.words }
+
+  before(:each) do
+    expect(RandomWord).to receive(:load_word_list).twice.and_return(["aaa","bbb", "ccc"])
+  end
+
+  after(:each) do
+    RandomWord.exclude_list.clear
+    RandomWord.instance_eval{ @nouns, @adjs, @words = nil, nil, nil } # reset rspec effects
   end
 
   it "will not return an excluded word" do
@@ -99,7 +131,7 @@ shared_examples 'allows constraints on word length' do |method|
     end
 
     after(:each) do
-      RandomWord.instance_eval{ @nouns, @adjs = nil, nil }
+      RandomWord.instance_eval{ @nouns, @adjs, @words = nil, nil, nil }
     end
 
     let(:next_words) do
@@ -175,7 +207,7 @@ shared_examples 'changing constraints in subsequent calls' do |method|
     end
 
     after(:each) do
-      RandomWord.instance_eval{ @nouns, @adjs = nil, nil }
+      RandomWord.instance_eval{ @nouns, @adjs, @words = nil, nil, nil }
     end
 
     it 'applies the new constraints' do
