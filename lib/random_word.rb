@@ -38,18 +38,26 @@ module RandomWord
       @max_length = opts[:not_longer_than] || Float::INFINITY
     end
 
+    def rng=(r)
+      @_rng = r
+    end
+    def rng
+      @_rng ||= Random.new(Random.new_seed)
+    end
+
     def self.extended(mod)
       mod.set_constraints
     end
 
     private
 
+    
     def next_unused_idx(used)
-      idx = rand(length)
+      idx = rng.rand(length)
       try = 1
       while used.include?(idx)
         raise OutOfWords if try > 1000
-        idx = rand(length)
+        idx = rng.rand(length)
         try += 1
       end
 
@@ -69,6 +77,10 @@ module RandomWord
 
     def exclude_list
       @exclude_list ||= []
+    end
+
+    def rng=(r)
+      word_list.rng = r
     end
 
     # @return [Enumerator] Random noun enumerator
