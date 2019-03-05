@@ -1,13 +1,13 @@
 require File.expand_path("spec_helper", File.dirname(__FILE__))
 
-describe RandomWord, "enumerator" do 
+describe RandomWord, "enumerator" do
   subject {RandomWord.enumerator(["aaa", "bbb", "ccc"])}
 
   it "can get you the next word in its list" do
     expect(subject.next).to be_one_of(["aaa", "bbb", "ccc"])
   end
 
-  it "raises error when it runs out of words" do 
+  it "raises error when it runs out of words" do
     3.times{subject.next}
 
     expect{subject.next}.to raise_error(StopIteration)
@@ -20,28 +20,29 @@ describe RandomWord, "enumerator" do
       already_received << new_word
     end
   end
+
 end
 
-describe RandomWord do 
+describe RandomWord do
   after(:all) do
     RandomWord.instance_eval{ @nouns, @adjs = nil, nil } # reset rspec effects
   end
 
-  it "can return a random noun enumerator" do 
+  it "can return a random noun enumerator" do
     expect(RandomWord.nouns).to respond_to(:next)
   end
 
-  it "can return a random adj enumerator" do 
+  it "can return a random adj enumerator" do
     expect(RandomWord.adjs).to respond_to(:next)
   end
 
-  it "can return a random phrase enumerator" do 
+  it "can return a random phrase enumerator" do
     expect(RandomWord.phrases.next).to be_a(String)
   end
 end
 
 describe RandomWord, "#exclude" do
-  let(:word_list) { ["aaa","ccc","c", "cab", "abc", "ace", "dad"] }
+  let(:word_list) { [nil, "aaa","ccc","c", "cab", "abc", "ace", "dad"] }
 
   [
     {:name => "normal words", :exclude => "ccc", :expected => Set.new(["aaa","c", "cab", "abc", "ace", "dad"])},
@@ -54,7 +55,7 @@ describe RandomWord, "#exclude" do
       received_words = []
       loop do
         received_words << subject.next
-      end rescue StopIteration
+      end
 
       expect(Set.new(received_words)).to eq(rec[:expected])
     end

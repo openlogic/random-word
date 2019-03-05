@@ -58,7 +58,12 @@ module RandomWord
 
     def excluded?(word)
       exclude_list = Array(@random_word_exclude_list)
-      exclude_list.any? {|r| r === word} || word.length < min_length || (!(max_length.nil?) && word.length > max_length)
+      (
+        word.nil? ||
+        exclude_list.any? {|r| r === word} ||
+        word.length < min_length ||
+        (!(max_length.nil?) && word.length > max_length)
+      )
     end
 
     class OutOfWords < Exception; end
